@@ -1,0 +1,25 @@
+
+- name: ' Install Packages.'
+  package:
+    name: '{{ item }}'
+    state: 'present'
+  with_items: '{{ yum_packages }}'
+
+
+- name: "pip install boto"
+  pip: name=boto
+
+- name: "pip install setuptools"
+  pip: name=setuptools
+
+- name: pip install ansible - version "{{ansible_install_version}}"
+  pip: name=ansible version="{{ansible_install_version}}"
+
+- name: pip install ansible - latest
+  pip: name=ansible
+
+- name: pip install permission fix
+  shell: "find /usr/lib/python2.*/site-packages -type f -exec chmod 644 {} \\;"
+
+- name: pip install permission fix 2
+  shell: "find /usr/lib/python2.*/site-packages -type d -exec chmod 755 {} \\;"

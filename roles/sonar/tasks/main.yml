@@ -1,2 +1,191 @@
 ---
 # tasks file for sonar
+
+---
+- name: install dependencies
+  yum:
+   pkg:
+    - git
+    - openssh-clients
+    - curl
+    - unzip
+    - bash
+    - dejavu-sans-mono-fonts
+    - coreutils
+    #- tini
+    - gcc
+    #- gcc-c++
+    - make
+    - python-psycopg2
+   state: present
+
+- name: install epel-release from remote repos
+  yum:
+   pkg: epel-release
+   state: present
+
+- name: install java
+  yum:
+    pkg: java-1.8.0-openjdk-devel
+    state: present
+
+- name: add changes to limits.conf
+  shell: echo '* soft nofile 65000' >> /etc/security/limits.conf
+
+- name: add changes to limits.conf
+  shell: echo '* hard nofile 65000' >> /etc/security/limits.conf
+
+- name: copy postgres 9.6 rpm to server
+  yum:
+   pkg: https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+
+
+- name: install postgres 9.6
+  yum:
+   pkg:
+     - postgresql96-server
+     - postgresql96-contrib
+     - postgresql96
+
+#- name: auto start postgresql when server is turned on
+#  shell: systemctl enable postgresql-9.6.service
+
+
+
+##### FIX initdb command (had to run it manually)
+- name: Check if PostgreSQL database is initialized.
+  stat:
+    path: /usr/pgsql-9.6/bin/postgresql96-setup
+  register: pgdata_dir_version
+  sudo: yes
+
+- name: Ensure PostgreSQL database is initialized.
+  command:  /usr/pgsql-9.6/bin/postgresql96-setup initdb
+  when: not pgdata_dir_version.stat.exists
+  #become: true
+  sudo: yes
+
+#- name: initialize database
+#  shell: /usr/pgsql-9.6/bin/postgresql96-setup initdb
+
+#- name: enable PostgreSQL
+#  shell:  systemctl enable postgresql-9.6.service
+
+- name: pull postgres configuration from git
+  get_url:
+    url: https://raw.githubusercontent.com/navitastech-rfad/devops-config/master/sonar/pg.sql
+    dest: /tmp/pg.sql
+
+- name: enable PostgreSQL
+  shell: systemctl enable postgresql-9.6.service
+  sudo: yes
+
+- name: start PostgreSQL
+  shell: systemctl start postgresql-9.6.service
+  sudo: yes
+
+- name: configure postgres
+  shell: psql -f /tmp/pg.sql
+  sudo_user: postgres
+
+- name: Check if pg_hba.conf is present
+  stat:
+    path: /var/lib/pgsql/9.6/data/pg_hba.conf
+  register: pg_hba_config_version
+  sudo: yes
+
+- name: pull postgres config from git
+  get_url:
+    url: https://raw.githubusercontent.com/navitastech-rfad/devops-config/master/sonar/pg_hba.conf
+    dest: /tmp/pg_hba.conf
+  when: not pg_hba_config_version
+  sudo: yes
+
+- name: move pg_hba.conf to /var/lib/pgsql/9.6/data
+  shell: mv /tmp/pg_hba.conf /var/lib/pgsql/9.6/data/
+  when: not pg_hba_config_version.stat.exists
+  sudo: yes
+
+- name: change user and group ownership of /var/lib/pgsql/9.6/data/pg_hba.conf
+  file:
+    path: /var/lib/pgsql/9.6/data/pg_hba.conf
+    owner: postgres
+    group: postgres
+
+
+#- name: Create PostgreSQL user
+#  postgresql_user:
+#    name: sonar
+#    password: sonar
+#  sudo_user: postgres
+  #notify: restart sonar
+
+#- name: create Sonar database for PostgreSQL
+#  postgresql_db:
+#    name: sonar
+#  sudo_user: postgres
+
+- name: restart PostgreSQL
+  shell: systemctl restart postgresql-9.6.service
+
+
+
+
+####### SONAR INSTALLATION #########
+- name: Add the sonar group
+  group:
+    name: sonar
+    state: present
+
+- name: Add the sonar user
+  user:
+    name: sonar
+    uid: 1100
+    group: sonar
+
+
+- name: add sonar permissions to sudoers nofile
+  shell: echo "sonar   ALL=(ALL:ALL) ALL" >> /etc/sudoers
+
+- name: download sonarqube from source
+  get_url:
+    url: https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-7.7.zip
+    dest: /tmp/sonarqube-7.7.zip
+  sudo: yes
+
+- name: Unarchive sonarqube from remote source
+  unarchive:
+    src: https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-7.7.zip
+    dest: /tmp
+    remote_src: yes
+
+- name: Check if /opt/sonarqube is present
+  stat:
+    path: /opt/sonarqube
+  register: sonarqube_version
+  sudo: yes
+
+- name: move sonarqube-7.7 to /opt/sonarqube
+  shell: mv /tmp/sonarqube-7.7 /opt/sonarqube
+  when: not sonarqube_version.stat.exists
+  sudo: yes
+
+- name: Remove  original sonar.properties
+  file:
+    path: /opt/sonarqube/conf/sonar.properties
+    state: absent
+
+- name: Download sonar.properties
+  get_url:
+    url: https://raw.githubusercontent.com/navitastech-rfad/devops-config/master/sonar/sonar.properties
+    dest: /opt/sonarqube/conf/sonar.properties
+
+- name: change user and group ownership of /opt/sonarqube
+  file:
+    path: /opt/sonarqube
+    owner: sonar
+    group: sonar
+
+- name: start sonarqube
+  shell: /opt/sonarqube/bin/linux-x86-64/sonar.sh start
+  sudo: yes

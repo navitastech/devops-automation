@@ -1,0 +1,7 @@
+
+- name: 'Enable Kong service.'
+  become: yes
+  service:
+    name: '{{ kong_service_name }}'
+    state: '{{ kong_service_state }}'
+    enabled: '{{ kong_service_enabled }}'

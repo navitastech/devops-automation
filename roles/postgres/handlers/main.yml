@@ -5,3 +5,9 @@
     name: "{{ postgresql_service_name }}"
     state: restarted
     enabled: yes
+
+- name: restart firewalld
+  service:
+    name: firewalld
+    state: restarted
+   

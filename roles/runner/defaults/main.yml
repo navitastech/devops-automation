@@ -10,3 +10,4 @@ yum_packages:
 - epel-release
 - python-pip
 - git
+- sshpass

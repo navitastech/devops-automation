@@ -42,6 +42,8 @@ postgresql_databases:
     owner: kong   
   - name: sonar
     owner: sonar 
+  - name: keycloak
+    owner: sonar 
 
 # List of database extensions to be created (optional)
 postgresql_database_extensions: []
@@ -49,11 +51,16 @@ postgresql_database_extensions: []
 # List of users to be created (optional)
 postgresql_users: 
   - name: kong
-    pass: kong
+    pass: "{{vault_db_user_password}}"
     encrypted: yes
   - name: sonar
-    pass: sonar
+    pass: "{{vault_db_user_password}}"
     encrypted: yes
+  - name: keycloak
+    pass: "{{vault_db_user_password}}"
+    encrypted: yes
+
+    
 
 # List of schemas to be created (optional)
 postgresql_database_schemas: []
@@ -65,7 +72,10 @@ postgresql_user_privileges:
     priv: "ALL"  
   - name: sonar                   # user name
     db: sonar                  # database
-    priv: "ALL"            
+    priv: "ALL"      
+  - name: keycloak                   # user name
+    db: sonar                  # database
+    priv: "ALL"          
           
 
 # pg_hba.conf

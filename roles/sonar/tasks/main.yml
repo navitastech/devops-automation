@@ -1,7 +1,4 @@
 ---
-# tasks file for sonar
-
----
 - name: install dependencies
   yum:
    pkg:
@@ -12,9 +9,7 @@
     - bash
     - dejavu-sans-mono-fonts
     - coreutils
-    #- tini
     - gcc
-    #- gcc-c++
     - make
     - python-psycopg2
    state: present
@@ -47,36 +42,31 @@
      - postgresql96-contrib
      - postgresql96
 
-#- name: auto start postgresql when server is turned on
-#  shell: systemctl enable postgresql-9.6.service
+
+###########################################
+######## initialize PostgreSQL ############
+###########################################
 
 
+- name: initialize database
+  shell: /usr/pgsql-9.6/bin/postgresql96-setup initdb
+  args:
+    creates: /var/db/postgres/data96
 
-##### FIX initdb command (had to run it manually)
-- name: Check if PostgreSQL database is initialized.
-  stat:
-    path: /usr/pgsql-9.6/bin/postgresql96-setup
-  register: pgdata_dir_version
+- name: start PostgreSQL
+  shell: systemctl start postgresql-9.6.service
   sudo: yes
 
-- name: Ensure PostgreSQL database is initialized.
-  command:  /usr/pgsql-9.6/bin/postgresql96-setup initdb
-  when: not pgdata_dir_version.stat.exists
-  #become: true
+- name: enable PostgreSQL
+  shell:  systemctl start postgresql-9.6.service
   sudo: yes
-
-#- name: initialize database
-#  shell: /usr/pgsql-9.6/bin/postgresql96-setup initdb
-
-#- name: enable PostgreSQL
-#  shell:  systemctl enable postgresql-9.6.service
 
 - name: pull postgres configuration from git
   get_url:
     url: https://raw.githubusercontent.com/navitastech-rfad/devops-config/master/sonar/pg.sql
     dest: /tmp/pg.sql
 
-- name: enable PostgreSQL
+- name: stop PostgreSQL
   shell: systemctl enable postgresql-9.6.service
   sudo: yes
 
@@ -84,7 +74,15 @@
   shell: systemctl start postgresql-9.6.service
   sudo: yes
 
-- name: configure postgres
+
+
+
+
+###########################################
+##### Create Sonar DB on PostgreSQL #######
+###########################################
+
+- name: create sonar DB on postgres
   shell: psql -f /tmp/pg.sql
   sudo_user: postgres
 
@@ -94,7 +92,7 @@
   register: pg_hba_config_version
   sudo: yes
 
-- name: pull postgres config from git
+- name: pull sonar DB config from git
   get_url:
     url: https://raw.githubusercontent.com/navitastech-rfad/devops-config/master/sonar/pg_hba.conf
     dest: /tmp/pg_hba.conf
@@ -112,26 +110,16 @@
     owner: postgres
     group: postgres
 
-
-#- name: Create PostgreSQL user
-#  postgresql_user:
-#    name: sonar
-#    password: sonar
-#  sudo_user: postgres
-  #notify: restart sonar
-
-#- name: create Sonar database for PostgreSQL
-#  postgresql_db:
-#    name: sonar
-#  sudo_user: postgres
-
 - name: restart PostgreSQL
   shell: systemctl restart postgresql-9.6.service
 
 
 
 
-####### SONAR INSTALLATION #########
+
+###########################################
+############ Install Sonar ################
+###########################################
 - name: Add the sonar group
   group:
     name: sonar

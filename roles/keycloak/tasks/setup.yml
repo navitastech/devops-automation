@@ -1,0 +1,28 @@
+
+
+- name: ' Install Packages.'
+  package:
+    name: '{{ item }}'
+    state: 'present'
+  with_items:
+    - java-1.8.0-openjdk-headless
+
+
+
+ 
+- name: Ensure group "keycloak_service_group" exists
+  group:
+    name: "{{keycloak_service_group}}"
+    state: present
+
+- name: "Create keycloak_service_user accounts"
+  user:
+    name: "{{ keycloak_service_user }}"
+    groups: "{{keycloak_service_group}}"
+
+- name: "Allow {{keycloak_service_user}} users to sudo without a password"
+  lineinfile:
+    dest: "/etc/sudoers"  
+    state: "present"
+    regexp: "^%{{keycloak_service_user}}"
+    line: "%{{keycloak_service_user}} ALL=(ALL) NOPASSWD: ALL"

@@ -1,0 +1,76 @@
+
+- name: Ensure jdbc  directory exists.
+  file: 
+    dest: "{{keycloak_postgresql_jdbc_path}}"
+    owner: "{{ keycloak_service_user }}"
+    group: "{{ keycloak_service_group }}"
+    state: directory
+
+
+- name: configure JDBC Driver
+  template:
+    src: module.xml.j2
+    dest: "{{keycloak_postgresql_jdbc_path}}/module.xml"
+    owner: "{{ keycloak_service_user }}"
+    group: "{{ keycloak_service_group }}"
+   
+- name: Copy JDBC Driver
+  copy: src=postgresql-42.2.5.jar dest="{{keycloak_postgresql_jdbc_path}}/postgresql-42.2.5.jar"
+
+- name: configure Standalone xml config
+  template:
+    src: standalone.xml.j2
+    dest: "{{keycloak_install_dir}}/standalone/configuration/standalone.xml"
+    owner: "{{ keycloak_service_user }}"
+    group: "{{ keycloak_service_group }}"
+   
+
+- name: configure firewall for Keycloak ports
+  firewalld:
+    port: "{{ item }}"
+    permanent: true
+    state: enabled
+    immediate: yes
+  with_items:
+      - "{{ keycloak_http_port }}/tcp"
+      - "{{ keycloak_https_port }}/tcp"
+      - "{{ keycloak_management_http_port }}/tcp"
+      - "{{ keycloak_management_https_port }}/tcp"
+
+- name: restart firewalld
+  service:
+    name: firewalld
+    state: restarted
+  
+- name: configure sysconfig file for keycloak service
+  template:
+    src: keycloak-sysconfig.j2
+    dest: /etc/sysconfig/keycloak
+    owner: root
+    group: root
+    mode: 0644
+    
+
+- name: configure systemd unit file for keycloak service
+  template:
+    src: keycloak.service.j2
+    dest: /etc/systemd/system/keycloak.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: reload systemd
+  systemd:
+    daemon_reload: yes
+  
+#create admin user
+- name: create admin user
+  shell: "{{ keycloak_install_dir }}/bin/add-user-keycloak.sh -u {{ keycloak_admin_user }} -p {{ keycloak_admin_password }}"
+  args:
+    executable: /bin/bash
+
+- name: restart keycloak
+  service:
+    name: keycloak
+    enabled: yes
+    state: started

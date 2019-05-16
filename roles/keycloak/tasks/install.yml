@@ -1,0 +1,51 @@
+ 
+- name: check for existing install...
+  stat:
+    path: '{{ keycloak_install_dir }}'
+  changed_when: False
+  register: keycloak_installation_exists
+
+
+
+- block:
+    - name: stop the old keycloak service
+      systemd:
+        name: keycloak
+        state: stopped
+      ignore_errors: yes
+    - name: remove the old Keycloak deployment
+      file:
+        path: "{{ keycloak_install_dir }}"
+        state: absent
+  when: keycloak_installation_exists.stat.exists and keycloak_force_install|bool
+
+
+- name: check for existing install after removal
+  stat:
+    path: '{{ keycloak_install_dir }}'
+  changed_when: False
+  register: keycloak_installation_exists
+
+
+- when: not keycloak_installation_exists.stat.exists
+  block:
+    - name: download tgz
+      get_url:
+        url: '{{ keycloak_tgz_url }}'
+        dest: /tmp/{{ keycloak_tgz }}
+        mode: 0644
+    - name: unarchive
+      unarchive:
+        remote_src: yes
+        src: /tmp/{{ keycloak_tgz }}
+        dest: '{{ keycloak_parent_install_dir }}'
+        creates: '{{ keycloak_install_dir }}'
+        owner: "{{ keycloak_service_user }}"
+        group: "{{ keycloak_service_group }}"
+  always:
+    - name: cleanup...
+      file:
+        path: /tmp/{{ keycloak_tgz }}
+        state: absent
+
+ 

@@ -1,0 +1,21 @@
+---
+
+
+- name: 'Kong | Define whether Kong is prepared.'
+  stat:
+    path: '{{ kong_prefix_path }}'
+  register: 'kong_prepared'
+
+
+- name: 'Kong | Define log path.'
+  set_fact:
+    kong_log_path: '{{ kong_default_log_path }}'
+  when: 'kong_log_path is not defined'
+ 
+- import_tasks: 'install.yml'
+
+- import_tasks: 'configure.yml' 
+
+- import_tasks: 'service.yml'
+ 
+ 

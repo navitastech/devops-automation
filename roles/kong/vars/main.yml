@@ -1,0 +1,6 @@
+---
+
+kong_url: 'https://kong.bintray.com/kong-community-edition-rpm/centos/7/kong-community-edition-{{ kong_version }}.el7.noarch.rpm'
+kong_default_log_path: '{{ kong_prefix_path | regex_replace("\\/$", "") + "/logs" }}'
+kong_dependencies:
+  - 'epel-release'

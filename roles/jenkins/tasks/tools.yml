@@ -1,3 +1,4 @@
+---
 - name: Create Maven installation directory
   file:
     state=directory
@@ -38,7 +39,6 @@
 - name: clean maven files
   file : path={{staging_dir}}/{{maven_filename}} state=absent
 
-
 - name: Create gradle installation directory
   file:
     state=directory
@@ -76,11 +76,8 @@
     src={{gradle_install_dir}}/gradle-{{gradle_version}}/bin/gradle
     dest={{gradle_bin_path}}/gradle
 
-
 - name: clean gradle files
   file : path={{staging_dir}}/{{gradle_filename}} state=absent
-
-
 
 - name: Download Terraform
   get_url: url="https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip"
@@ -90,7 +87,6 @@
   unarchive: src="{{staging_dir}}/terraform_{{ terraform_version }}_linux_amd64.zip"
              dest=/usr/local/bin
              copy=no
-
 
 - name: install docker
   yum:

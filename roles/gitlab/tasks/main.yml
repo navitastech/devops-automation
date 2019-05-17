@@ -1,2 +1,91 @@
 ---
 # tasks file for gitlab
+---
+- name: install epel-release from remote repos
+  yum:
+   pkg: epel-release
+   state: present
+
+- name: install dependencies
+  yum:
+   pkg:
+    - openssh-server
+    - openssh
+    - curl
+    - policycoreutils-python
+   state: present
+
+#########################################
+########### Configure Swap ##############
+#########################################
+
+- name: add swap partition
+  shell: dd if=/dev/zero of=/swapfile count=4096 bs=1M
+  when: ansible_swaptotal_mb < 1
+  sudo: yes
+
+- name: add permission to /swapfile
+  file:
+    path: /swapfile
+    mode: 0600
+  sudo: yes
+
+- name: create swap
+  shell: mkswap /swapfile
+  when: ansible_swaptotal_mb < 1
+  sudo: yes
+
+- name: turn on swap
+  shell: swapon /swapfile
+  when: ansible_swaptotal_mb < 1
+  sudo: yes
+
+
+- name: add config to swap file
+  shell: echo '/swapfile   none    swap    sw    0   0' | sudo tee -a /etc/fstab
+  when: ansible_swaptotal_mb < 1
+
+- name: free memory
+  shell: free -m
+
+
+
+
+#########################################
+########### Change Hostname #############
+#########################################
+
+- name: setup hostname
+  shell: hostnamectl set-hostname gitlab
+  sudo: yes
+
+- name: Insert FQDN config into etc hosts
+  blockinfile:
+    path: /etc/hosts
+    block: |
+      127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+      ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+      203.0.113.1 gitlab.navitas-tech.com gitlab
+  when: ansible_swaptotal_mb < 1
+
+
+#########################################
+########### Install Gitlab ##############
+#########################################
+
+- name: download Gitlab repository
+  shell: curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash
+
+- name: install Gitlab
+  yum:
+    pkg: gitlab-ce
+  sudo: yes
+
+- name: change external URL
+  lineinfile:
+    path: /etc/gitlab/gitlab.rb
+    line: EXTERNAL_URL="http://gitlab.navitas-tech.com"
+
+- name: make changes take in effect for Gitlab
+  shell: gitlab-ctl reconfigure
+  sudo: yes

@@ -1,0 +1,107 @@
+- name: Create Maven installation directory
+  file:
+    state=directory
+    owner={{jenkins_user}}
+    group={{jenkins_group}}
+    mode=0755
+    dest={{maven_install_dir}}/maven
+
+- name: Download Maven Distrubution
+  command: wget {{maven_mirror}}/{{maven_filename}} -O {{staging_dir}}/{{maven_filename}} --no-check-certificate
+
+- name: Install Maven tar file
+  unarchive:
+    src={{staging_dir}}/{{maven_filename}}
+    dest={{maven_install_dir}}
+    copy=false
+    mode=0744
+
+- name: Update Maven Directory permissions
+  file: dest={{maven_install_dir}}/apache-maven-{{maven_version}}  owner={{jenkins_user}}  group={{jenkins_group}} mode=755 state=directory recurse=yes
+
+- name: Set  Maven binary Path
+  become: yes
+  file:
+    state=link
+    force=true
+    src={{maven_install_dir}}/apache-maven-{{maven_version}}/bin/mvn
+    dest={{maven_bin_path}}/mvn
+
+- name: Create Maven m2 repository directory
+  file:
+    state=directory
+    owner={{jenkins_user}}
+    group={{jenkins_group}}
+    mode=0755
+    dest=/home/{{jenkins_user}}/.m2
+
+- name: clean maven files
+  file : path={{staging_dir}}/{{maven_filename}} state=absent
+
+
+- name: Create gradle installation directory
+  file:
+    state=directory
+    owner={{jenkins_user}}
+    group={{jenkins_group}}
+    mode=0755
+    dest={{gradle_install_dir}}/gradle
+
+- name: Download gradle Distrubution
+  command: wget {{gradle_mirror}}/{{gradle_filename}} -O {{staging_dir}}/{{gradle_filename}}
+
+- name: clean previous installation
+  file:
+    path: "{{gradle_install_dir}}/gradle-{{gradle_version}}"
+    state: absent
+
+- name: Install gradle tar file
+  tags: gradle
+  unarchive:
+    src={{staging_dir}}/{{gradle_filename}}
+    dest={{gradle_install_dir}}
+    copy=false
+    mode=0744
+
+- name: Update gradle Directory permissions
+  tags: gradle
+  file: dest={{gradle_install_dir}}/gradle-{{gradle_version}}  owner={{jenkins_user}}  group={{jenkins_group}} mode=755 state=directory recurse=yes
+
+- name: Set  gradle binary Path
+  tags: gradle
+  become: yes
+  file:
+    state=link
+    force=true
+    src={{gradle_install_dir}}/gradle-{{gradle_version}}/bin/gradle
+    dest={{gradle_bin_path}}/gradle
+
+
+- name: clean gradle files
+  file : path={{staging_dir}}/{{gradle_filename}} state=absent
+
+
+
+- name: Download Terraform
+  get_url: url="https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip"
+          dest="{{staging_dir}}/terraform_{{ terraform_version }}_linux_amd64.zip"
+
+- name: Extract and install Terraform
+  unarchive: src="{{staging_dir}}/terraform_{{ terraform_version }}_linux_amd64.zip"
+             dest=/usr/local/bin
+             copy=no
+
+
+- name: install docker
+  yum:
+    name='docker'
+    state=latest
+
+- name: service docker
+  service:
+    name=docker
+    state=started
+    enabled=yes
+
+- name:  add jenkins user to docker
+  command: usermod -a -G docker jenkins

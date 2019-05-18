@@ -35,11 +35,7 @@
   delay: 10
   check_mode: false
 
-- name: Remove Jenkins security init scripts after first startup.
-  file:
-    path: "{{ jenkins_home }}/init.groovy.d/basic-security.groovy"
-    state: absent
 
-# Update Jenkins and install configured plugins.
-#- include_tasks: plugins.yml
+
+- include_tasks: plugins.yml
 - include_tasks: tools.yml

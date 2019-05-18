@@ -8,7 +8,7 @@
     dest={{maven_install_dir}}/maven
 
 - name: Download Maven Distrubution
-  command: wget {{maven_mirror}}/{{maven_filename}} -O {{staging_dir}}/{{maven_filename}} --no-check-certificate
+  get_url: url="{{maven_mirror}}/{{maven_filename}}" dest="{{staging_dir}}/{{maven_filename}}"
 
 - name: Install Maven tar file
   unarchive:
@@ -48,7 +48,8 @@
     dest={{gradle_install_dir}}/gradle
 
 - name: Download gradle Distrubution
-  command: wget {{gradle_mirror}}/{{gradle_filename}} -O {{staging_dir}}/{{gradle_filename}}
+  get_url: url="{{gradle_mirror}}/{{gradle_filename}}" dest="{{staging_dir}}/{{gradle_filename}}"
+
 
 - name: clean previous installation
   file:

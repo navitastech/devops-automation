@@ -1,4 +1,15 @@
 ---
+- name: Ensure dependencies are installed.
+  package:
+    name:
+      - curl
+      - libselinux-python
+      - initscripts
+      - java-1.8.0-openjdk-devel
+      - unzip
+    state: present
+
+
 - include: nexus_purge.yml
   when: ((purge is defined) and (purge | bool))
 

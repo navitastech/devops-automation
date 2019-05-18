@@ -246,13 +246,13 @@
 
 - name: Subsequent re-provision admin password
   set_fact:
-    current_nexus_admin_password: "{{ nexus_admin_password }}"
+    current_nexus_admin_password: 'admin123'
   when: nexus_data_dir_contents.stdout != ""
   no_log: true
 
 - include: declare_script_each.yml
   with_items:
-    - update_admin_password
+   # - update_admin_password
     - setup_ldap
     - setup_anonymous_access
     - setup_base_url

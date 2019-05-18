@@ -1,0 +1,12 @@
+---
+# defaults file for bastion
+
+ansible_install_version: 2.7
+
+
+yum_packages: 
+- wget
+- curl
+- epel-release
+- python-pip
+- git

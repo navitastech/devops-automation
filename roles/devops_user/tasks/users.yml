@@ -1,0 +1,38 @@
+- name: Ensure group "devops_user_group" exists
+  group:
+    name: "{{devops_user_group}}"
+    state: present
+
+- name: "Create user accounts"
+  user:
+    name: "{{ devops_user }}"
+    groups: "{{devops_user_group}}"
+
+- name: "Add authorized keys"
+  authorized_key:
+    user: "{{ devops_user }}"
+    key: "{{ lookup('file', 'files/cicduser.pub') }}"
+ 
+
+- name: "Allow admin users to sudo without a password"
+  lineinfile:
+    dest: "/etc/sudoers"  
+    state: "present"
+    regexp: "^%{{devops_user}}"
+    line: "%{{devops_user}} ALL=(ALL) NOPASSWD: ALL"
+
+
+- name: Ensure .ssh directory exists.
+  file: 
+    dest: "{{ key_file | dirname }}"
+    mode: 0700 
+    owner: "{{devops_user}}" 
+    state: directory
+
+- name: Install ssh key
+  copy: 
+    content: "{{ ssh_key }}" 
+    dest: "/home/{{devops_user}}/.ssh/id_rsa"
+    mode: 0600
+    owner: "{{devops_user}}"
+  when: install_private_key

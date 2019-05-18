@@ -1,0 +1,3 @@
+
+- name: updating /etc/security/limits.conf
+  copy: src=limits.conf dest=/etc/security/limits.conf backup=yes

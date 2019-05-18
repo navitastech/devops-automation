@@ -1,0 +1,10 @@
+---
+devops_user: "cicduser"
+devops_user_group: "cicduser"
+
+install_private_key: true
+
+
+key_file: "/home/{{devops_user}}/.ssh/id_rsa"
+
+ssh_key: "{{vault_ssh_key}}"

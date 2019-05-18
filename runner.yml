@@ -1,0 +1,6 @@
+---
+- hosts: runner
+  become: yes
+  roles:
+    - runner
+    - devops_user

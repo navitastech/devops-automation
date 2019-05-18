@@ -77,3 +77,14 @@
     or (jenkins_http_config is defined and jenkins_http_config.changed)
     or (jenkins_home_config is defined and jenkins_home_config.changed)
   tags: ['skip_ansible_lint']
+
+- name: open firewalld port
+  firewalld:
+    port: 8080/tcp
+    permanent: true
+    state: enabled
+
+- name: restart firewalld
+  service:
+    name: firewalld
+    state: restarted

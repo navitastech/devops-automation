@@ -9,6 +9,24 @@
       - unzip
     state: present
 
+- name: configure firewall for nexus ports
+  firewalld:
+    port: "{{ item }}"
+    permanent: true
+    state: enabled
+    immediate: yes
+  with_items:
+      - "{{ nexus_default_port }}/tcp"
+      - "{{ nexus_docker_hosted_port }}/tcp"
+      - "{{ nexus_docker_proxy_port }}/tcp"
+      - "{{ nexus_docker_group_port }}/tcp"
+
+
+- name: restart firewalld
+  service:
+    name: firewalld
+    state: restarted
+  
 
 - include: nexus_purge.yml
   when: ((purge is defined) and (purge | bool))
@@ -194,21 +212,3 @@
 
 
 
-- name: configure firewall for nexus ports
-  firewalld:
-    port: "{{ item }}"
-    permanent: true
-    state: enabled
-    immediate: yes
-  with_items:
-      - "{{ nexus_default_port }}/tcp"
-      - "{{ nexus_docker_hosted_port }}/tcp"
-      - "{{ nexus_docker_proxy_port }}/tcp"
-      - "{{ nexus_docker_group_port }}/tcp"
-
-
-- name: restart firewalld
-  service:
-    name: firewalld
-    state: restarted
-  

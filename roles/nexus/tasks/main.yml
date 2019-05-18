@@ -180,3 +180,24 @@
 
 - include: create_task_each.yml
   with_items: "{{ nexus_scheduled_tasks }}"
+
+
+
+- name: configure firewall for nexus ports
+  firewalld:
+    port: "{{ item }}"
+    permanent: true
+    state: enabled
+    immediate: yes
+  with_items:
+      - "{{ nexus_default_port }}/tcp"
+      - "{{ nexus_docker_hosted_port }}/tcp"
+      - "{{ nexus_docker_proxy_port }}/tcp"
+      - "{{ nexus_docker_group_port }}/tcp"
+
+
+- name: restart firewalld
+  service:
+    name: firewalld
+    state: restarted
+  

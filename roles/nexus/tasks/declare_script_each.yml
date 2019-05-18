@@ -1,4 +1,8 @@
 ---
+
+- debug:
+    msg: "current_nexus_admin_password  {{ current_nexus_admin_password }}  "
+
 - name: Removing (potential) previously declared Groovy script {{ item }}
   uri:
     url: "http://localhost:{{ nexus_default_port }}{{ nexus_default_context_path }}service/rest/v1/script/{{ item }}"

@@ -10,3 +10,6 @@
     group: "{{ jenkins_process_group }}"
     mode: 0775
   register: jenkins_users_config
+
+- name: restart docker
+  service: "name=docker state={{ docker_restart_handler_state }}"

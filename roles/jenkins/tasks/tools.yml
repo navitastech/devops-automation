@@ -89,16 +89,85 @@
              dest=/usr/local/bin
              copy=no
 
-- name: install docker
-  yum:
-    name='docker'
-    state=latest
 
-- name: service docker
-  service:
-    name=docker
-    state=started
-    enabled=yes
+- name: Ensure old versions of Docker are not installed.
+  package:
+    name:
+      - docker
+      - docker-common
+      - docker-engine
+    state: absent
 
-- name:  add jenkins user to docker
-  command: usermod -a -G docker jenkins
+- name: Add Docker GPG key.
+  rpm_key:
+    key: https://download.docker.com/linux/centos/gpg
+    state: present
+
+- name: Add Docker repository.
+  get_url:
+    url: "{{ docker_yum_repo_url }}"
+    dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Configure Docker Edge repo.
+  ini_file:
+    dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
+    section: 'docker-{{ docker_edition }}-edge'
+    option: enabled
+    value: '{{ docker_yum_repo_enable_edge }}'
+
+
+
+- name: Ensure containerd service dir exists.
+  file:
+    path: /etc/systemd/system/containerd.service.d
+    state: directory
+
+- name: Add shim to ensure Docker can start in all environments.
+  template:
+    src: override.conf.j2
+    dest: /etc/systemd/system/containerd.service.d/override.conf
+  register: override_template
+
+- name: Reload systemd daemon if template is changed.
+  systemd:
+    daemon_reload: true
+  when: override_template is changed
+
+  
+- name: Install Docker.
+  package:
+    name: "{{ docker_package }}"
+    state: "{{ docker_package_state }}"
+  notify: restart docker
+
+
+
+- name: Check current docker-compose version.
+  command: docker-compose --version
+  register: docker_compose_current_version
+  changed_when: false
+  failed_when: false
+
+- name: Delete existing docker-compose version if it's different.
+  file:
+    path: "{{ docker_compose_path }}"
+    state: absent
+  when: >
+    docker_compose_current_version.stdout is defined
+    and docker_compose_version not in docker_compose_current_version.stdout
+
+- name: Install Docker Compose (if configured).
+  get_url:
+    url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
+    dest: "{{ docker_compose_path }}"
+    mode: 0755
+
+- name: Ensure docker users are added to the docker group.
+  user:
+    name: "{{ item }}"
+    groups: docker
+    append: true
+  with_items: "{{ docker_users }}"

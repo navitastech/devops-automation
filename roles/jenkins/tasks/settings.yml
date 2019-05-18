@@ -57,8 +57,18 @@
     group: "{{ jenkins_process_group }}"
     mode: 0775
 
-- name: Trigger handlers immediately in case Jenkins was installed
-  meta: flush_handlers
+- name: configure default users
+  template:
+    src: "{{item}}.j2"
+    dest: "{{ jenkins_home }}/init.groovy.d/{{item}}"
+    owner: "{{ jenkins_user }}"
+    group: "{{ jenkins_group }}"
+    mode: 0775
+  with_items: 
+    - setup-security.groovy
+    - setup-csrf.groovy
+    - setup-executors.groovy
+
 
 - name: Immediately restart Jenkins on http or user changes.
   service: name=jenkins state=restarted

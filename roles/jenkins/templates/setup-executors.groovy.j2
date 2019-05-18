@@ -1,0 +1,8 @@
+#!groovy
+
+import jenkins.model.Jenkins
+
+
+Jenkins jenkins = Jenkins.getInstance()
+jenkins.setNumExecutors(8)
+jenkins.save()

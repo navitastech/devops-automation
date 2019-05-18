@@ -5,6 +5,8 @@
       - curl
       - libselinux-python
       - initscripts
+      - java-1.8.0-openjdk-devel
+      - unzip
     state: present
 
 - name: Ensure Jenkins repo is installed.
@@ -36,10 +38,9 @@
     name: "/tmp/jenkins-{{ jenkins_version }}-1.1.noarch.rpm"
     state: present
   when: jenkins_version is defined and specific_version.stat.exists
-  notify: configure default users
-
+   
 - name: Ensure Jenkins is installed.
   package:
     name: jenkins
     state: "{{ jenkins_package_state }}"
-  notify: configure default users
+ 

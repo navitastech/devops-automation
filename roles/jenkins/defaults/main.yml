@@ -1,10 +1,13 @@
 ---
-# Optional method of pinning a specific version of Jenkins and/or overriding the
-# default Jenkins packaging URL.
-# jenkins_version: "1.644"
-# jenkins_pkg_url: "https://www.example.com"
+jenkins_repo_url: https://pkg.jenkins.io/redhat/jenkins.repo
+jenkins_repo_key_url: https://pkg.jenkins.io/redhat/jenkins.io.key
+enkins_pkg_url: https://pkg.jenkins.io/redhat
+jenkins_init_file: /etc/sysconfig/jenkins
+jenkins_http_port_param: JENKINS_PORT
+jenkins_java_options_env_var: JENKINS_JAVA_OPTIONS
 
-# Change this to `latest` to update Jenkins if a newer version is available.
+
+
 jenkins_package_state: present
 
 jenkins_connection_delay: 5
@@ -180,14 +183,43 @@ jenkins_plugins_install_dependencies: true
 jenkins_updates_url: "https://updates.jenkins.io"
 
 jenkins_admin_username: admin
-jenkins_admin_password: admin
+jenkins_admin_password: "{{vault_jenkins_admin_password}}"
 jenkins_admin_password_file: ""
 
 jenkins_process_user: jenkins
 jenkins_process_group: "{{ jenkins_process_user }}"
+
+
+jenkins_user: "{{jenkins_process_user}}"
+jenkins_group: "{{jenkins_process_group}}"
 
 jenkins_init_changes:
   - option: "JENKINS_ARGS"
     value: "--prefix={{ jenkins_url_prefix }}"
   - option: "{{ jenkins_java_options_env_var }}"
     value: "{{ jenkins_java_options }}"
+
+
+maven_install_dir: /opt
+maven_version: "3.6.0"
+maven_bin_path: "/usr/local/bin"
+maven_mirror: "https://archive.apache.org/dist/maven/maven-3/{{ maven_version }}/binaries"
+maven_filename: "apache-maven-{{ maven_version }}-bin.tar.gz"
+
+
+gradle_version: 5.2
+
+gradle_mirror: "https://services.gradle.org/distributions"
+
+gradle_install_dir: /opt
+
+
+gradle_bin_path: '/usr/local/bin'
+
+gradle_filename: "gradle-{{ gradle_version }}-bin.zip"
+
+staging_dir: "/tmp"
+
+terraform_version: "0.11.13"
+
+docker_compose_version: "1.23.2"

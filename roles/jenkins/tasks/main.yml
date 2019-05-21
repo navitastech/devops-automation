@@ -38,6 +38,10 @@
 
 
 - include_tasks: plugins.yml
+
+- name: restart jenkins
+  service: name=jenkins state=restarted
+
 - include_tasks: tools.yml
 
 - include_tasks: nginx.yml

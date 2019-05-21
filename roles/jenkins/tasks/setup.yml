@@ -7,6 +7,7 @@
       - initscripts
       - java-1.8.0-openjdk-devel
       - unzip
+      - nginx
     state: present
 
 - name: Ensure Jenkins repo is installed.

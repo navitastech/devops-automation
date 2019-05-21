@@ -1,0 +1,6 @@
+---
+- name: Create Nginx ssl  directory
+  file:
+    state=directory
+    mode=0600
+    dest="{{nginx_ssl_location}}"

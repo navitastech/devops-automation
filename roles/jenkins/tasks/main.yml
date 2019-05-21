@@ -39,3 +39,5 @@
 
 - include_tasks: plugins.yml
 - include_tasks: tools.yml
+
+- include_tasks: nginx.yml

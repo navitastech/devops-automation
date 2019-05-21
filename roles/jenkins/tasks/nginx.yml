@@ -4,3 +4,6 @@
     state=directory
     mode=0600
     dest="{{nginx_ssl_location}}"
+
+- name: Start nginx
+  service: name=nginx state=started enabled=true

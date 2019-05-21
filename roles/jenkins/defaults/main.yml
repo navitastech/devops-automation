@@ -257,3 +257,4 @@ docker_users:
 
 
 root_group: root
+nginx_package_name: nginx

@@ -36,3 +36,11 @@
     mode: 0600
     owner: "{{devops_user}}"
   when: install_private_key
+
+- name: Install hosts file
+  copy:
+    src: hosts
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: '0644'

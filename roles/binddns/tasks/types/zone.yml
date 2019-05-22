@@ -70,7 +70,6 @@
     mode: 0644
     backup: true
     force: true
-    checksum: '{{ bind__zone.source_checksum|d(omit) }}'
   when: bind__zone.source_url is defined
   ignore_errors: '{{ bind__zone.source_ignore_errors|d(true)|bool }}'
   notify: ['reload-bind']

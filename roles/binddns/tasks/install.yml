@@ -4,4 +4,6 @@
   package:
     name: '{{ item }}'
     state: present
-  with_items: '{{ bind__packages_names }}'
+  with_items: 
+    - bind
+    - bind-utils

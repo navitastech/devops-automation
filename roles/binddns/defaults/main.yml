@@ -1,11 +1,6 @@
 ---
 
-# defaults file for bind
-
-bind__packages_names:
-  - bind
-  - bind-utils
-
+ 
 bind__remove_distribution_directories:
   - /etc/named
 
@@ -29,6 +24,9 @@ bind__service_group: '{{ bind__service_user }}'
 
 # The name of the system service
 bind__service_name: bind9
+
+
+
 
 # Determine if the service will be enabled
 bind__service_enabled: true

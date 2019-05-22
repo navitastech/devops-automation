@@ -11,3 +11,4 @@ yum_packages:
 - python-pip
 - git
 - sshpass
+- python-netaddr

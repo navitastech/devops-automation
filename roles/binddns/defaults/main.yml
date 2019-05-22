@@ -22,12 +22,18 @@ bind_zone_domains:
           - jenkins
 
 # List of acls.
-bind_acls: []
+bind_acls: 
+  - "192.168.2.171"
+  - "192.168.2.172"
+  - "192.168.2.173"
+  - "192.168.2.150"
+
 
 # List of IPv4 address of the network interface(s) to listen on. Set to "any"
 # to listen on all interfaces
 bind_listen_ipv4:
   - "127.0.0.1"
+  - "192.168.2.171"
 
 # List of IPv6 address of the network interface(s) to listen on.
 bind_listen_ipv6:

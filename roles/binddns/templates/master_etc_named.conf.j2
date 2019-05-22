@@ -129,3 +129,6 @@ zone "{{ (network | ipaddr('revdns'))[-(9+(network|regex_replace('^.*/','')|int)
 {% endif %}
 {% endfor %}
 {% endif %}
+
+
+include "/etc/named/named.conf.local";

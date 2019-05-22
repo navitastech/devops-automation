@@ -1,19 +1,24 @@
 ---
+
 # defaults file for bind
 
-# Enable facts deploiement
-bind__facts: true
+bind__packages_names:
+  - bind
+  - bind-utils
 
+bind__remove_distribution_directories:
+  - /etc/named
 
-### INSTALLATION CONFIGURATION
-# ---------------------------------------
-# List of packages to install
-bind__packages_names: []
+bind__remove_distribution_files:
+  - /etc/named.conf
+  - /etc/named.root.key
 
-# List of distribution specific directories and files that will
-# be removed to clean the working directory
-bind__remove_distribution_directories: []
-bind__remove_distribution_files: []
+bind__service_name: named
+bind__service_user: named
+
+bind__service_environment: /etc/sysconfig/named
+
+bind__rndc_keyfile: /etc/rndc.key
 
 
 ### SERVICE CONFIGURATION

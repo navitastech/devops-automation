@@ -11,14 +11,14 @@
 
 - name: restart-bind-daemon
   service:
-    name: '{{ bind__service_name }}'
+    name: 'named'
     state: restarted
   when: bind__service_enabled|bool
   listen: restart-bind-after-config-ok
 
 - name: reload-bind-daemon
   service:
-    name: '{{ bind__service_name }}'
+    name: 'named'
     state: reloaded
   when: bind__service_enabled|bool
   listen: reload-bind-after-config-ok

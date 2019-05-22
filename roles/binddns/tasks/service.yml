@@ -3,7 +3,7 @@
 - name: Install bind.service systemd unit file
   template:
     src: bind.service.j2
-    dest: '/etc/systemd/system/{{ bind__service_name }}.service'
+    dest: '/etc/systemd/system/named.service'
     owner: root
     group: root
     mode: 0755
@@ -28,6 +28,6 @@
 
 - name: Ensure bind is started and enabled on boot
   service:
-    name: '{{ bind__service_name }}'
-    enabled: '{{ bind__service_enabled|bool }}'
-    state: "{{ bind__service_enabled|bool|ternary('started', 'stopped') }}"
+    name: "named"
+    enabled: true
+    state: "started"

@@ -47,7 +47,7 @@ bind_allow_recursion:
 bind_forward_only: false
 
 # List of name servers to forward DNS requests to.
- bind_forwarders:
+bind_forwarders:
    - '8.8.8.8'
    - '8.8.4.4'
 # DNS round robin order (random or cyclic)

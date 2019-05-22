@@ -5,7 +5,3 @@
  
 #- name: Import configuration tasks
 # import_tasks: configure.yml
-
-- name: Import service tasks
-  import_tasks: service.yml
- 

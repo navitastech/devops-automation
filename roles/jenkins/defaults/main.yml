@@ -11,8 +11,8 @@ jenkins_host_name: jenkins.internal.navitas-labs.com
   #ssl_certificate /etc/letsencrypt/live/jenkins.example.com/fullchain.pem;
   #ssl_certificate_key /etc/letsencrypt/live/jenkins.example.com/privkey.pem;
 nginx_ssl_location: "/etc/nginx/ssl"
-jenkins_certificate_chain: "{{nginx_ssl_location}}/fullchain.pem"
-jenkins_certificate_private_key: "{{nginx_ssl_location}}/privkey.pem"
+jenkins_certificate_chain: "{{nginx_ssl_location}}/jenkins-chain.pem"
+jenkins_certificate_private_key: "{{nginx_ssl_location}}/jenkins-privatekey.pem"
 
 
 

@@ -211,4 +211,4 @@
   with_items: "{{ nexus_scheduled_tasks }}"
 
 
-
+- include_tasks: nginx.yml

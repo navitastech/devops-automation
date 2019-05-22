@@ -38,3 +38,13 @@ keycloak_postgresql_username: "keycloak"
 keycloak_postgresql_password: "{{vault_db_user_password}}"
 
 
+
+nginx_ssl_location: "/etc/nginx/ssl"
+keycloak_certificate_chain: "{{nginx_ssl_location}}/keycloak-chain.pem"
+keycloak_certificate_private_key: "{{nginx_ssl_location}}/keycloak-privatekey.pem"
+
+
+keycloak_host_name: keycloak.internal.navitas-labs.com
+ 
+root_group: root
+nginx_package_name: nginx

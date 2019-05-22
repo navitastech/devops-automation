@@ -350,3 +350,13 @@ _nexus_repos_gitlfs_defaults:
 nexus_repos_gitlfs_hosted:
   - name: gitlfs-internal
     blob_store: "{{ nexus_blob_names.gitlfs.blob }}"
+
+nginx_ssl_location: "/etc/nginx/ssl"
+nexus_certificate_chain: "{{nginx_ssl_location}}/nexus-chain.pem"
+nexus_certificate_private_key: "{{nginx_ssl_location}}/nexus-privatekey.pem"
+
+
+nexus_host_name: nexus.internal.navitas-labs.com
+ 
+root_group: root
+nginx_package_name: nginx

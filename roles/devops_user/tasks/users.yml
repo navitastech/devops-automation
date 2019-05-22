@@ -20,6 +20,7 @@
     state: "present"
     regexp: "^%{{devops_user}}"
     line: "%{{devops_user}} ALL=(ALL) NOPASSWD: ALL"
+    backrefs: yes
 
 
 - name: Ensure .ssh directory exists.

@@ -1,7 +1,7 @@
 # roles/bind/defaults/main.yml
 ---
 
-bind_zone_master_server_ip: 10.0.2.15
+bind_zone_master_server_ip: 192.168.2.171
 
 bind_log: "data/named.run"
  

@@ -1,0 +1,36 @@
+---
+# tasks file for k8s
+- name: update all packages
+  command: yum -y update
+ 
+  
+- name: install network tools
+  yum:
+    name: net-tools
+
+- name: install ntp
+  yum:
+    name: ntp
+ 
+- name: check ntpd service is running
+  command: systemctl status ntpd
+  register: result
+  ignore_errors: True
+ 
+    
+- name: configure and sync ntp
+  command: "{{item}}"
+  with_items:
+    - chkconfig ntpd on
+    - ntpdate pool.ntp.org
+  when: result is failed
+   
+
+- name: start service ntp, if not running
+  service:
+    name: ntpd
+    state: started
+ 
+- name: turn off firewall for install
+  command: systemctl disable firewalld
+  

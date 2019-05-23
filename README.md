@@ -75,7 +75,7 @@ run the below playbook . This will create user "cicduser"  along with ssh keys o
 ./provision.sh nexus
 ````
 
-## Keyclaok Setup
+## Keycloak Setup
 
 ```
 ./provision.sh keycloak

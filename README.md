@@ -83,12 +83,12 @@ run the below playbook . This will create user "cicduser"  along with ssh keys o
  
 ## Openshift Origin Setup
 
-# Step 1
+### Step 1
 ```
 git clone https://github.com/openshift/openshift-ansible
 cd openshift-ansible
 ```
-# Step 2
+### Step 2
 Preprare the hosts file(inventory/hosts)
 ```
 
@@ -147,7 +147,7 @@ openshift_master_htpasswd_users={'admin': '$apr1$9Ip8p9sY$8vVQLVN9JiVXCuQylKZeC.
 #openshift_master_htpasswd_file=<path to local pre-generated htpasswd file>
 ```
 
-# Step 3
+### Step 3
 ```
 ansible-playbook -i inventory/hosts playbooks/prerequisites.yml
 ansible-playbook -i inventory/hosts playbooks/deploy_cluster.yml

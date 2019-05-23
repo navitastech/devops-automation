@@ -6,7 +6,7 @@ jenkins_init_file: /etc/sysconfig/jenkins
 jenkins_http_port_param: JENKINS_PORT
 jenkins_java_options_env_var: JENKINS_JAVA_OPTIONS
 
-jenkins_host_name: jenkins.internal.navitas-labs.com
+jenkins_host_name: jenkins.navitas-labs.com
  
   #ssl_certificate /etc/letsencrypt/live/jenkins.example.com/fullchain.pem;
   #ssl_certificate_key /etc/letsencrypt/live/jenkins.example.com/privkey.pem;

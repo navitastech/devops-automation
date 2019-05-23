@@ -18,7 +18,7 @@ server {
   #ssl_certificate /etc/letsencrypt/live/jenkins.example.com/fullchain.pem;
   #ssl_certificate_key /etc/letsencrypt/live/jenkins.example.com/privkey.pem;
   ssl_certificate {{jenkins_certificate_chain}};
-  ssl_certificate_key {{jenkins_certificate_private_key}}
+  ssl_certificate_key {{jenkins_certificate_private_key}};
 
 
   location / {

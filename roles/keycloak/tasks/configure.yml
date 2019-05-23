@@ -36,6 +36,8 @@
       - "{{ keycloak_https_port }}/tcp"
       - "{{ keycloak_management_http_port }}/tcp"
       - "{{ keycloak_management_https_port }}/tcp"
+      - "80/tcp"
+      - "443/tcp"
 
 - name: restart firewalld
   service:

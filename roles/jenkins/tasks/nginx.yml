@@ -24,7 +24,7 @@
     dest: "{{jenkins_certificate_chain}}"
     mode: 0600
  
- - name: copy ssl private key 
+- name: copy ssl private key 
   copy: 
     content: "{{ tools_private_key }}" 
     dest: "{{jenkins_certificate_private_key}}"

@@ -18,6 +18,15 @@
     mode=0600
     dest="{{nginx_ssl_location}}"
 
+
+- name: Create nginx systemd
+  file:
+    state=directory
+    dest="/etc/systemd/system/nginx.service.d"
+
+- name: Create systemd config for nginx
+  command: printf "[Service]\nExecStartPost=/bin/sleep 0.1\n" > /etc/systemd/system/nginx.service.d/override.conf  
+
 - name: copy ssl cert chain
   copy: 
     content: "{{ tools_ssl_chain }}" 

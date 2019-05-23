@@ -370,6 +370,3 @@ tools_private_key: "{{ vault_tool_ssl_private_key }}"
 nginx_ssl_location: "/etc/nginx/ssl"
 nexus_certificate_chain: "{{nginx_ssl_location}}/nexus-chain.pem"
 nexus_certificate_private_key: "{{nginx_ssl_location}}/nexus-privatekey.pem"
-
-
-k 

@@ -7,7 +7,7 @@
 192.168.2.150 nexus.navitaslab.com
 192.168.2.177 mysql.navitaslab.com
 192.168.2.178 postgres.navitaslab.com
-192.168.2.174 okdmaster.navitaslabs.com 
+192.168.2.174 okd-master.navitaslabs.com 
 192.168.2.175 okd.worker1.navitaslabs.com
 192.168.2.176 okd.worker2.navitaslabs.com
 192.168.2.161	k8s-master1.navitaslabs.com

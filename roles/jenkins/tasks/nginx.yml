@@ -18,6 +18,19 @@
     mode=0600
     dest="{{nginx_ssl_location}}"
 
+- name: copy ssl cert chain
+  copy: 
+    content: "{{ tools_ssl_chain }}" 
+    dest: "{{jenkins_certificate_chain}}"
+    mode: 0600
+ 
+ - name: copy ssl private key 
+  copy: 
+    content: "{{ tools_private_key }}" 
+    dest: "{{jenkins_certificate_private_key}}"
+    mode: 0600
+ 
+
 - name: Add nginx conf
   template:
     src: jenkins.conf.j2
@@ -29,3 +42,6 @@
 
 - name: Ensure nginx is started and enabled to start at boot.
   service: name=nginx state=started enabled=yes
+
+- name: Ensure SELinux for https is set.
+  command: setsebool httpd_can_network_connect on

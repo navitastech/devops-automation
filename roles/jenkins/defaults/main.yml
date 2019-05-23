@@ -14,7 +14,8 @@ nginx_ssl_location: "/etc/nginx/ssl"
 jenkins_certificate_chain: "{{nginx_ssl_location}}/jenkins-chain.pem"
 jenkins_certificate_private_key: "{{nginx_ssl_location}}/jenkins-privatekey.pem"
 
-
+tools_ssl_chain: "{{ vault_tool_ssl_chain }}"
+tools_private_key: "{{ vault_tool_ssl_private_key }}"
 
 jenkins_package_state: present
 

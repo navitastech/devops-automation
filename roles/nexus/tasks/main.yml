@@ -20,6 +20,9 @@
       - "{{ nexus_docker_hosted_port }}/tcp"
       - "{{ nexus_docker_proxy_port }}/tcp"
       - "{{ nexus_docker_group_port }}/tcp"
+      - "80/tcp"
+      - "443/tcp"
+    
 
 
 - name: restart firewalld

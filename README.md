@@ -8,7 +8,7 @@ Repository for Navitas Labs Automation
 | 192.168.2.160 |  bhost.navitaslab.com |   |
 | 192.168.2.171 |  bdns.navitaslab.com |  | 
 | 192.168.2.172 |  jenkins.navitaslab.com | jenkins.navitas-labs.com |  
-| 192.168.2.173 |  keycloak.navitaslab.com | keyclaok.navitas-labs.com | 
+| 192.168.2.173 |  keycloak.navitaslab.com | keycloak.navitas-labs.com | 
 | 192.168.2.150 |  nexus.navitaslab.com |  nexus.navitas-labs.com | 
 | 192.168.2.177 |  mysql.navitaslab.com |  |
 | 192.168.2.178 |  postgres.navitaslab.com |  |

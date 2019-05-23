@@ -1,27 +1,27 @@
 ################################################
 # nginx Proxy configuration with SSL
 #################################################
-upstream keycloak {
+upstream nexus {
   server 127.0.0.1:8080 fail_timeout=0;
 }
  
 server {
   listen 80;
-  server_name {{keycloak_host_name}};
+  server_name {{nexus_host_name}};
     rewrite ^ https://$server_name$request_uri? permanent;
 }
  
 server {
   listen 443 ssl;
-  server_name {{keycloak_host_name}};
+  server_name {{nexus_host_name}};
 
-  access_log  /var/log/nginx/keycloak.access.log;
-  error_log   /var/log/nginx/keycloak.error.log;
+  access_log  /var/log/nginx/nexus.access.log;
+  error_log   /var/log/nginx/nexus.error.log;
  
   #ssl_certificate /etc/letsencrypt/live/jenkins.example.com/fullchain.pem;
   #ssl_certificate_key /etc/letsencrypt/live/jenkins.example.com/privkey.pem;
-  ssl_certificate {{keycloak_certificate_chain}};
-  ssl_certificate_key {{keycloak_certificate_private_key}};
+  ssl_certificate {{nexus_certificate_chain}};
+  ssl_certificate_key {{nexus_certificate_private_key}};
   ssl_session_timeout  5m;
   ssl_protocols  SSLv3 TLSv1;
   ssl_ciphers HIGH:!ADH:!MD5;
@@ -33,7 +33,7 @@ server {
     proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header        X-Forwarded-Proto $scheme;
     proxy_redirect http:// https://;
-    proxy_pass              http://keycloak;
+    proxy_pass              http://nexus;
     add_header Pragma "no-cache";
 
     # Required for new HTTP-based CLI

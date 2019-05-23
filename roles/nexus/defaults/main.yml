@@ -356,7 +356,20 @@ nexus_certificate_chain: "{{nginx_ssl_location}}/nexus-chain.pem"
 nexus_certificate_private_key: "{{nginx_ssl_location}}/nexus-privatekey.pem"
 
 
-nexus_host_name: nexus.internal.navitas-labs.com
+nexus_host_name: nexus.navitas-labs.com
  
 root_group: root
 nginx_package_name: nginx
+
+
+
+tools_ssl_chain: "{{ vault_tool_ssl_chain }}"
+tools_private_key: "{{ vault_tool_ssl_private_key }}"
+
+
+nginx_ssl_location: "/etc/nginx/ssl"
+nexus_certificate_chain: "{{nginx_ssl_location}}/nexus-chain.pem"
+nexus_certificate_private_key: "{{nginx_ssl_location}}/nexus-privatekey.pem"
+
+
+k 

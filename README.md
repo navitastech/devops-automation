@@ -82,3 +82,73 @@ run the below playbook . This will create user "cicduser"  along with ssh keys o
 ````
  
 ## Openshift Origin Setup
+
+# Step 1
+```
+git clone https://github.com/openshift/openshift-ansible
+cd openshift-ansible
+```
+# Step 2
+Preprare the hosts file(inventory/hosts)
+```
+
+
+[masters]
+okd-master.navitaslabs.com
+
+[etcd]
+okd-master.navitaslabs.com
+
+[nodes]
+okd-master.navitaslabs.com openshift_node_group_name="node-config-master-infra"
+okd.worker1.navitaslabs.com openshift_node_group_name="node-config-compute"
+okd.worker2.navitaslabs.com openshift_node_group_name="node-config-compute"
+
+[nfs]
+okd-master.navitaslabs.com
+[lb]
+#ose3-lb.test.example.com
+
+# Create an OSEv3 group that contains the masters and nodes groups
+[OSEv3:children]
+masters
+nodes
+etcd
+#lb
+#nfs
+
+[OSEv3:vars]
+ansible_user=cicduser
+
+ansible_become=yes
+openshift_version="3.11"
+openshift_release="3.11"
+openshift_deployment_type=origin
+openshift_image_tag="v3.11.0"
+openshift_master_bootstrap_enabled=True
+# Specify an exact rpm version to install or configure.
+# WARNING: This value will be used for all hosts in RPM based environments, even those that have another version installed.
+# This could potentially trigger an upgrade and downtime, so be careful with modifying this value after the cluster is set up.
+openshift_pkg_version=-3.11.0
+openshift_master_default_subdomain=apps.okd.navitas-labs.com
+
+#Set cluster_hostname to point at your load balancer
+#openshift_master_cluster_hostname=ose3-lb.test.example.com
+
+
+ 
+# Debug level for all OpenShift components (Defaults to 2)
+debug_level=2
+
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider'}]
+# Defining htpasswd users
+openshift_master_htpasswd_users={'admin': '$apr1$9Ip8p9sY$8vVQLVN9JiVXCuQylKZeC.', 'admin2': '$apr1$9Ip8p9sY$8vVQLVN9JiVXCuQylKZeC.'}
+# or
+#openshift_master_htpasswd_file=<path to local pre-generated htpasswd file>
+```
+
+# Step 3
+```
+ansible-playbook -i inventory/hosts playbooks/prerequisites.yml
+ansible-playbook -i inventory/hosts playbooks/deploy_cluster.yml
+```

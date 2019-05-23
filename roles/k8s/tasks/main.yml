@@ -1,9 +1,5 @@
 ---
 # tasks file for k8s
-- name: update all packages
-  command: yum -y update
- 
-  
 - name: install network tools
   yum:
     name: net-tools

@@ -38,6 +38,9 @@
   selinux:
     state: disabled
 
+- name: turn off firewall for install
+  command: modprobe br_netfilter
+  
 - name: ensure net.bridge.bridge-nf-call-ip6tables is set to 1
   sysctl:
     name: net.bridge.bridge-nf-call-ip6tables
@@ -49,3 +52,9 @@
     name: net.bridge.bridge-nf-call-iptables
     value: 1
     state: present
+
+- name: restart server
+  command: /sbin/shutdown -r +1
+  async: 0
+  poll: 0
+  ignore_errors: true
